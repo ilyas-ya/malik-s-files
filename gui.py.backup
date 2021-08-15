@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+from guizero import App, TextBox, PushButton, Text, Box
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
+def update_text():
+	label.value = name.value
+	print("Now place your tag to write")
+	reader.write(name.value)
+	print("Written")
+	valcheck = Text(body, text="Merci, veuillez récupérer votre carte")
+def read_card():
+	print("card check")
+	id, text = reader.read()
+	print(id)
+	print(text)
+	cardata.value = id, text
+
+app = App(width=1080, height=800, bg="white")
+
+reader= SimpleMFRC522()
+
+hello = Text(app, text="Bonjour")
+label = Text(app, "Scannez votre QR Code")
+name = TextBox(app)
+body = Box(app, height="fill")
+valider = PushButton(body, text="valider", command=update_text)
+checkbutton = PushButton(app, text="vérifier carte", command=read_card)
+cardata = Text(body, text="En attente d'une carte")
+
+app.display()
+GPIO.cleanup()
